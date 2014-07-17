@@ -1,0 +1,30 @@
+---
+title: "Peer Assignment 1 - Reproducible Research"
+author: "Kiichi Takeuchi"
+date: "July 16, 2014"
+output: html_document
+---
+
+First, extract Zip file if it was not extracted yet.
+
+```{r echo=TRUE}
+setwd("~/work/r/class/RepData_PeerAssessment1")
+if (!file.exists("activity.csv")){
+  unzip("activity.zip")
+}
+```
+
+
+Next, read the data file
+```{r echo=TRUE,results='hide'}
+data<-read.csv("activity.csv")
+```
+
+(Pre-processing might go here....)
+
+Summary of the data
+```{r echo=TRUE}
+hist(data$steps)
+```
+
+
