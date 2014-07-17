@@ -7,7 +7,7 @@ output: html_document
 
 First, extract Zip file if it was not extracted yet.
 
-```{r echo=TRUE}
+```{r unzipping,echo=TRUE}
 setwd("~/work/r/class/RepData_PeerAssessment1")
 if (!file.exists("activity.csv")){
   unzip("activity.zip")
@@ -15,16 +15,41 @@ if (!file.exists("activity.csv")){
 ```
 
 
-Next, read the data file
-```{r echo=TRUE,results='hide'}
-data<-read.csv("activity.csv")
+Next, load the data file
+```{r loading,echo=TRUE,results='hide'}
+library(data.table)
+data<-fread("activity.csv")
 ```
 
-(Pre-processing might go here....)
-
-Summary of the data
-```{r echo=TRUE}
-hist(data$steps)
+Calculate Steps per Day
+```{r sum_per_day,echo=TRUE}
+library(ggplot2)
+sum_by_date <- data[,list(total=sum(steps,na.rm=T)),by=date]
 ```
+
+Histogram of Steps per Day
+```{r histgram_sum,echo=TRUE,fig.width=15,fig.height=7}
+ggplot(sum_by_date, aes(x=date, y=total)) + geom_bar(stat = "identity") + theme(axis.text.x = element_text(angle = 90,hjust = 1))# + coord_flip()# + scale_x_reverse() 
+```
+
+Calculate Mean and Median
+```{r mean_median,echo=TRUE}
+#https://class.coursera.org/repdata-004/forum/thread?thread_id=25
+mean(sum_by_date$total)
+median(sum_by_date$total)
+```
+Time Series Plot: The 5-minute interval and the average number of steps taken, averaged across all days
+
+```{r interval, echo=TRUE}
+avg_interval <- data[,list(avg=mean(steps,na.rm=T)),by=interval]
+ggplot(data=avg_interval,aes(x=interval,y=avg)) + geom_line()
+```
+
+What is the max average steps and which interval is it?
+```{r max_interval,echo=TRUE}
+avg_interval[avg==max(avg_interval$avg),]
+```
+
+
 
 
