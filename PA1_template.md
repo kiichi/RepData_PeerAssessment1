@@ -47,7 +47,10 @@ sum_by_date <- data[,list(total=sum(steps,na.rm=T)),by=date]
 Draw histogram of Steps per Day
 
 ```r
-ggplot(sum_by_date, aes(x=date, y=total)) + geom_bar(stat = "identity") + theme(axis.text.x = element_text(angle = 90,hjust = 1))# + coord_flip()# + scale_x_reverse() 
+p<-ggplot(sum_by_date, aes(x=date, y=total)) 
+p<- p + geom_bar(stat = "identity") 
+p<- p + theme(axis.text.x = element_text(angle = 90,hjust = 1))
+p
 ```
 
 ![plot of chunk histgram_sum](figure/histgram_sum.png) 
@@ -163,7 +166,10 @@ Here is the same analysis that I did above but I use the new data without missin
 
 ```r
 sum_by_date_f <- data_f[,list(total=sum(steps,na.rm=T)),by=date]
-ggplot(sum_by_date_f, aes(x=date, y=total)) + geom_bar(stat = "identity") + theme(axis.text.x = element_text(angle = 90,hjust = 1))# + coord_flip()# + scale_x_reverse() 
+pf<-ggplot(sum_by_date_f, aes(x=date, y=total)) 
+pf<- pf + geom_bar(stat = "identity") 
+pf<- pf + theme(axis.text.x = element_text(angle = 90,hjust = 1))
+pf
 ```
 
 ![plot of chunk histgram_sum_2](figure/histgram_sum_2.png) 
