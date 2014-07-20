@@ -56,7 +56,7 @@ median_val1
 ##The average daily activity pattern
 Time Series Plot would be generated as below. The 5-minute interval and the average number of steps taken, averaged across all days.
 
-```{r interval, echo=TRUE,fig.height=4}
+```{r interval, echo=TRUE,,fig.width=10,fig.height=5}
 avg_interval <- data[,list(avg=mean(steps,na.rm=T)),by=interval]
 head(avg_interval,5)
 ggplot(data=avg_interval,aes(x=interval,y=avg)) + geom_line()

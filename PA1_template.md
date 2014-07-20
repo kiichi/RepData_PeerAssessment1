@@ -233,16 +233,6 @@ Patterns until 900 from the begining looks similar but after 1000, weekdays data
 Note:Generate .md document using knitr library
 
 ```r
-library(knitr)
-knit2html("PA1_template.Rmd")
-```
-
-```
-## 
-## 
-## processing file: PA1_template.Rmd
-```
-
-```
-## Error: duplicate label 'pathsetup'
+#library(knitr)
+#knit2html("PA1_template.Rmd")
 ```
