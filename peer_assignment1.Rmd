@@ -15,7 +15,6 @@ setwd("~/work/r/class/RepData_PeerAssessment1")
 Below is the list of required R packages for this analysis:
 * data.table
 * ggplot2
-* gridExtra
 
 Extract Zip file if it was not extracted yet
 ```{r unzipping,echo=TRUE}
@@ -98,8 +97,7 @@ The histogram has been filled and bars are more smooth than first data set. The 
 
 
 #Weekdays and Weekends
-
-Categorize date into two factors : weekday and weekend.
+In this section, I will categorize date into two factors : weekday and weekend, and we explore the diffences.
 
 ```{r weekdays1, echo=TRUE}
 days<-weekdays(as.Date(data_f$date,'%Y-%m-%d'))
@@ -108,14 +106,21 @@ data_f[,c('day_type')]<-factor(days=='Saturday' | days=='Sunday', labels=c('week
 head(data_f,5)
 ```
 
-```{r draw_weekend, echo=TRUE,fig.width=10,fig.height=10}
+Render weekend steps
+```{r draw_weekend, echo=TRUE}
 avg_weekend <- data_f[day_type == 'weekend',list(avg=mean(steps,na.rm=T)),by=interval]
-avg_weekday <- data_f[day_type == 'weekday',list(avg=mean(steps,na.rm=T)),by=interval]
-p1<-ggplot(data=avg_weekend,aes(x=interval,y=avg)) + geom_line() + ggtitle("Average steps in Weekends")
-p2<-ggplot(data=avg_weekday,aes(x=interval,y=avg)) + geom_line() + ggtitle("Average steps in Weekdays")
-library(gridExtra)
-grid.arrange(p1, p2, nrow=2)
+ggplot(data=avg_weekend,aes(x=interval,y=avg)) + geom_line() + ggtitle("Average steps in Weekends")
 ```
+
+Render weekday steps
+```{r draw_weekday, echo=TRUE,fig.width=10,fig.height=5}
+
+avg_weekday <- data_f[day_type == 'weekday',list(avg=mean(steps,na.rm=T)),by=interval]
+ggplot(data=avg_weekday,aes(x=interval,y=avg)) + geom_line() + ggtitle("Average steps in Weekdays")
+```
+
+Patterns until 900 from the begining looks similar but after 1000, weekdays data shows less steps. 
+
 
 
 
