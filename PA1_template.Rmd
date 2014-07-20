@@ -42,10 +42,7 @@ sum_by_date <- data[,list(total=sum(steps,na.rm=T)),by=date]
 
 Draw histogram of Steps per Day
 ```{r histgram_sum,echo=TRUE,fig.width=15,fig.height=7}
-p<-ggplot(sum_by_date, aes(x=date, y=total)) 
-p<- p + geom_bar(stat = "identity") 
-p<- p + theme(axis.text.x = element_text(angle = 90,hjust = 1))
-p
+ggplot(sum_by_date, aes(x=total)) + geom_histogram()
 ```
 
 ##Mean and Median
@@ -93,10 +90,7 @@ sum(is.na(data$steps))
 Here is the same analysis that I did above but I use the new data without missing values: histogram, mean and median.
 ```{r histgram_sum_2,echo=TRUE,fig.width=15,fig.height=7}
 sum_by_date_f <- data_f[,list(total=sum(steps,na.rm=T)),by=date]
-pf<-ggplot(sum_by_date_f, aes(x=date, y=total)) 
-pf<- pf + geom_bar(stat = "identity") 
-pf<- pf + theme(axis.text.x = element_text(angle = 90,hjust = 1))
-pf
+ggplot(sum_by_date_f, aes(x=total)) + geom_histogram()
 mean_val2<-mean(sum_by_date_f$total)
 mean_val2
 median_val2<-median(sum_by_date_f$total)
