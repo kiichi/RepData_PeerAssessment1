@@ -12,6 +12,11 @@ First, setup your work directory path.
 setwd("~/work/r/class/RepData_PeerAssessment1")
 ```
 
+Below is the list of required R packages for this analysis:
+* data.table
+* ggplot2
+* gridExtra
+
 Extract Zip file if it was not extracted yet
 ```{r unzipping,echo=TRUE}
 if (!file.exists("activity.csv")){
@@ -39,8 +44,10 @@ ggplot(sum_by_date, aes(x=date, y=total)) + geom_bar(stat = "identity") + theme(
 
 ##Mean and Median
 ```{r mean_median,echo=TRUE}
-mean(sum_by_date$total)
-median(sum_by_date$total)
+mean_val1<-mean(sum_by_date$total)
+mean_val1
+median_val1<-median(sum_by_date$total)
+median_val1
 ```
 
 ##The average daily activity pattern
@@ -48,6 +55,7 @@ Time Series Plot would be generated as below. The 5-minute interval and the aver
 
 ```{r interval, echo=TRUE,fig.height=4}
 avg_interval <- data[,list(avg=mean(steps,na.rm=T)),by=interval]
+head(avg_interval,5)
 ggplot(data=avg_interval,aes(x=interval,y=avg)) + geom_line()
 ```
 
@@ -66,13 +74,49 @@ sum(is.na(data$steps))
 Here is the approach that I took to fill those missing values. I've used average value of each interval in order to replace NA in steps column. Before filling data, I merged original data table with average table by interval as the key. Make sure order by date and interval after the process.
 ```{r filling_na1, echo=TRUE}
 data_avg<-merge(data,avg_interval,by="interval")[order(date,interval)]
+head(data_avg,5)
 ```
 After mergining tables, fill steps where it contains NA. I'm casting average steps as integer below. The second line is verification code. The number of NA should be zero.
 ```{r filling_na2, echo=TRUE}
 data_f<-data # copy data first
 data_f[is.na(data_f$steps),c('steps')]<-as.integer(data_avg[is.na(data_f$steps),avg])
+head(data_f,5)
 sum(is.na(data$steps))
 ```
+
+Here is the same analysis that I did above but I use the new data without missing values: histogram, mean and median.
+```{r histgram_sum_2,echo=TRUE,fig.width=15,fig.height=7}
+sum_by_date_f <- data_f[,list(total=sum(steps,na.rm=T)),by=date]
+ggplot(sum_by_date_f, aes(x=date, y=total)) + geom_bar(stat = "identity") + theme(axis.text.x = element_text(angle = 90,hjust = 1))# + coord_flip()# + scale_x_reverse() 
+mean_val2<-mean(sum_by_date_f$total)
+mean_val2
+median_val2<-median(sum_by_date_f$total)
+median_val2
+```
+
+The histogram has been filled and bars are more smooth than first data set. The mean value slightly increased from `r format(round(mean_val1, 2), nsmall = 2)` to `r format(round(mean_val2, 2), nsmall = 2)`. The median has been changed from `r format(round(median_val1, 2), nsmall = 2)` to `r `r format(round(median_val2, 2), nsmall = 2)`. 
+
+
+#Weekdays and Weekends
+
+Categorize date into two factors : weekday and weekend.
+
+```{r weekdays1, echo=TRUE}
+days<-weekdays(as.Date(data_f$date,'%Y-%m-%d'))
+data_f[,c('day_in_week')]<-days
+data_f[,c('day_type')]<-factor(days=='Saturday' | days=='Sunday', labels=c('weekday','weekend'))
+head(data_f,5)
+```
+
+```{r draw_weekend, echo=TRUE,fig.width=10,fig.height=10}
+avg_weekend <- data_f[day_type == 'weekend',list(avg=mean(steps,na.rm=T)),by=interval]
+avg_weekday <- data_f[day_type == 'weekday',list(avg=mean(steps,na.rm=T)),by=interval]
+p1<-ggplot(data=avg_weekend,aes(x=interval,y=avg)) + geom_line() + ggtitle("Average steps in Weekends")
+p2<-ggplot(data=avg_weekday,aes(x=interval,y=avg)) + geom_line() + ggtitle("Average steps in Weekdays")
+library(gridExtra)
+grid.arrange(p1, p2, nrow=2)
+```
+
 
 
 
