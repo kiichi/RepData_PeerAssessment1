@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ##Setup
-First, setup your work directory path.
+First, setup your work directory path. For example, here is my path below. If you are using R Studio, you can also set it from Session > Set Working Directory > To Source File Location.
 
 ```{r pathsetup,echo=TRUE}
 setwd("~/work/r/class/RepData_PeerAssessment1")
@@ -16,8 +16,12 @@ Below is the list of required R packages for this analysis:
 * data.table
 * ggplot2
 
-Extract Zip file if it was not extracted yet
+Download and extract Zip file if it was not extracted yet
 ```{r unzipping,echo=TRUE}
+if (!file.exists("activity.zip")){
+  download.file("https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip","activity.zip",method="curl")
+}
+
 if (!file.exists("activity.csv")){
   unzip("activity.zip")
 }
@@ -107,7 +111,7 @@ head(data_f,5)
 ```
 
 Render weekend steps
-```{r draw_weekend, echo=TRUE}
+```{r draw_weekend, echo=TRUE,fig.width=10,fig.height=5}
 avg_weekend <- data_f[day_type == 'weekend',list(avg=mean(steps,na.rm=T)),by=interval]
 ggplot(data=avg_weekend,aes(x=interval,y=avg)) + geom_line() + ggtitle("Average steps in Weekends")
 ```
@@ -119,9 +123,7 @@ avg_weekday <- data_f[day_type == 'weekday',list(avg=mean(steps,na.rm=T)),by=int
 ggplot(data=avg_weekday,aes(x=interval,y=avg)) + geom_line() + ggtitle("Average steps in Weekdays")
 ```
 
-Patterns until 900 from the begining looks similar but after 1000, weekdays data shows less steps. 
-
-
+Patterns until 900 from the begining looks similar but after 1000, weekdays data shows less steps during daytime. This could be because of less activity during work hours.
 
 
 
