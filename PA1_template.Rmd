@@ -15,6 +15,7 @@ setwd("~/work/r/class/RepData_PeerAssessment1")
 Below is the list of required R packages for this analysis:
 * data.table
 * ggplot2
+* gridExtra
 
 Download and extract Zip file if it was not extracted yet
 ```{r unzipping,echo=TRUE}
@@ -110,17 +111,15 @@ data_f[,c('day_type')]<-factor(days=='Saturday' | days=='Sunday', labels=c('week
 head(data_f,5)
 ```
 
-Render weekend steps
-```{r draw_weekend, echo=TRUE,fig.width=10,fig.height=5}
+Render weekend and weekday steps
+```{r draw_weekend, echo=TRUE,fig.width=10,fig.height=10}
 avg_weekend <- data_f[day_type == 'weekend',list(avg=mean(steps,na.rm=T)),by=interval]
-ggplot(data=avg_weekend,aes(x=interval,y=avg)) + geom_line() + ggtitle("Average steps in Weekends")
-```
-
-Render weekday steps
-```{r draw_weekday, echo=TRUE,fig.width=10,fig.height=5}
+g1<-ggplot(data=avg_weekend,aes(x=interval,y=avg)) + geom_line() + ggtitle("Average steps in Weekends")
 
 avg_weekday <- data_f[day_type == 'weekday',list(avg=mean(steps,na.rm=T)),by=interval]
-ggplot(data=avg_weekday,aes(x=interval,y=avg)) + geom_line() + ggtitle("Average steps in Weekdays")
+g2<-ggplot(data=avg_weekday,aes(x=interval,y=avg)) + geom_line() + ggtitle("Average steps in Weekdays")
+library(gridExtra)
+grid.arrange( g1, g2, nrow=2)
 ```
 
 Patterns until 900 from the begining looks similar but after 1000, weekdays data shows less steps during daytime. This could be because of less activity during work hours.
